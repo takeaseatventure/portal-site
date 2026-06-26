@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TakeASeat DevTools Pro — Unlock Advanced Features</title>
+  <meta name="description" content="Unlock Pro features across all TakeASeat VS Code extensions: env drift detection, cron validation insights, bundle trend snapshots, and more. From $4/mo.">
+  <meta property="og:title" content="TakeASeat DevTools Pro — Unlock Advanced Features">
+  <meta property="og:description" content="Pro features for Env Diff, Cron Helper, Bundle Size Analyzer, Env Sync, and TODO Extract. Individual or all-access. From $4/mo.">
+  <link rel="canonical" href="https://takeaseatventure.com/pro">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --accent: #58a6ff; --text: #e6edf3; --text-muted: #8b949e;
+      --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.6;
+    }
+    .container { max-width: 968px; margin: 0 auto; padding: 0 24px; }
+    header {
+      border-bottom: 1px solid var(--border); padding: 16px 0;
+      position: sticky; top: 0; background: rgba(13,17,23,0.92); backdrop-filter: blur(8px); z-index: 100;
+    }
+    header .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    .header-actions { display: flex; gap: 16px; align-items: center; }
+    .btn {
+      display: inline-block; padding: 8px 20px; border-radius: 6px;
+      font-weight: 600; text-decoration: none; font-size: 0.9rem; transition: 0.2s;
+      border: 1px solid transparent; cursor: pointer;
+    }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { background: #79b8ff; }
+    .btn-outline { border-color: var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-buy {
+      background: var(--green); color: var(--bg); padding: 14px 28px; font-size: 1rem;
+      width: 100%; text-align: center; border-radius: 8px; font-weight: 700;
+    }
+    .btn-buy:hover { background: #46c75a; }
+    .hero { padding: 72px 0 48px; text-align: center; }
+    .hero h1 { font-size: 2.6rem; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.03em; }
+    .hero h1 .grad { background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 1.15rem; color: var(--text-muted); max-width: 580px; margin: 0 auto; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; padding: 48px 0; }
+    .price-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 36px 28px;
+      display: flex; flex-direction: column;
+    }
+    .price-card.featured {
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.15);
+      position: relative;
+    }
+    .price-card.featured::before {
+      content: "BEST VALUE"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: var(--bg); padding: 5px 18px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; white-space: nowrap;
+    }
+    .price-card h3 { font-size: 1.25rem; margin-bottom: 4px; text-align: center; }
+    .price-card .price-sub { color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 16px; }
+    .price-card .price { font-size: 3rem; font-weight: 800; margin: 8px 0 4px; text-align: center; }
+    .price-card .price .currency { font-size: 1.5rem; vertical-align: top; color: var(--text-muted); }
+    .price-card .price .period { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
+    .price-card .features { list-style: none; margin: 24px 0; flex-grow: 1; }
+    .price-card .features li { padding: 7px 0; font-size: 0.92rem; display: flex; align-items: flex-start; gap: 10px; }
+    .price-card .features li::before { content: "✓"; color: var(--green); font-weight: bold; flex-shrink: 0; }
+    .price-card .note { color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-top: 12px; }
+    .how-it-works { padding: 40px 0; }
+    .how-it-works h2 { font-size: 1.8rem; text-align: center; margin-bottom: 40px; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
+    .step { text-align: center; }
+    .step-num {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--card); border: 2px solid var(--accent);
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700;
+      color: var(--accent); margin: 0 auto 16px;
+    }
+    .step h4 { font-size: 1.05rem; margin-bottom: 6px; }
+    .step p { color: var(--text-muted); font-size: 0.9rem; }
+    .individual-section { padding: 40px 0; }
+    .individual-section h2 { font-size: 1.6rem; text-align: center; margin-bottom: 8px; }
+    .individual-section .sub { color: var(--text-muted); text-align: center; margin-bottom: 32px; }
+    .ext-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .ext-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .ext-card h4 { font-size: 1.05rem; margin-bottom: 6px; }
+    .ext-card .ext-price { font-size: 1.5rem; font-weight: 700; margin: 12px 0; }
+    .ext-card .ext-price .period { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+    .ext-card ul { list-style: none; margin: 16px 0; }
+    .ext-card ul li { padding: 4px 0; font-size: 0.85rem; color: var(--text-muted); display: flex; gap: 8px; }
+    .ext-card ul li::before { content: "✓"; color: var(--green); flex-shrink: 0; }
+    .ext-card .btn { display: block; width: 100%; text-align: center; padding: 10px; }
+    .faq { padding: 40px 0; }
+    .faq h2 { font-size: 1.6rem; text-align: center; margin-bottom: 32px; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 18px 0; }
+    .faq-item h3 { font-size: 1rem; margin-bottom: 6px; }
+    .faq-item p { color: var(--text-muted); font-size: 0.92rem; }
+    footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 40px; }
+    footer a { color: var(--accent); text-decoration: none; }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 2rem; }
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="/" class="logo">TakeASeat<span>DevTools</span></a>
+      <div class="header-actions">
+        <a href="/" class="btn btn-outline">Home</a>
+        <a href="#pricing" class="btn btn-primary">Pricing</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Unlock <span class="grad">Pro features</span></h1>
+      <p>One license unlocks everything — or pick the single extension you need. Cancel anytime. License keys work offline and across multiple machines.</p>
+    </div>
+  </section>
+
+  <section class="container" id="pricing">
+    <div class="pricing-grid">
+
+      <div class="price-card featured">
+        <h3>All Access Pro</h3>
+        <div class="price-sub">Every extension + the Cron API</div>
+        <div class="price"><span class="currency">$</span>8<span class="period">/mo</span></div>
+        <ul class="features">
+          <li><strong>Env Diff:</strong> batch compare + drift detection</li>
+          <li><strong>Cron Helper:</strong> validation insights + timeline</li>
+          <li><strong>Bundle Size:</strong> trend snapshots + CI gates</li>
+          <li><strong>Env Sync:</strong> coverage report + team sync</li>
+          <li><strong>TODO Extract:</strong> trend tracking + CI export</li>
+          <li><strong>Cron API:</strong> unlimited requests</li>
+          <li>All future Pro features, included</li>
+          <li>Priority email support</li>
+          <li>3-machine activation</li>
+        </ul>
+        <a href="https://buy.stripe.com/3cI28qeBM3LlaDB3bR9Zm04" class="btn btn-buy" target="_blank" rel="noopener">Get All Access — $8/mo</a>
+        <p class="note">Cancel anytime · Secure checkout via Stripe</p>
+      </div>
+
+      <div class="price-card">
+        <h3>Single Extension</h3>
+        <div class="price-sub">Pick the extension you use most</div>
+        <div class="price"><span class="currency">$</span>4–6<span class="period">/mo</span></div>
+        <ul class="features">
+          <li>That extension's full Pro feature set</li>
+          <li>License works offline (24h cache)</li>
+          <li>3-machine activation</li>
+          <li>Email support</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <a href="#individual" class="btn btn-primary" style="display:block;text-align:center;">Choose an extension ↓</a>
+        <p class="note">Upgrade to All Access anytime</p>
+      </div>
+
+      <div class="price-card">
+        <h3>Free</h3>
+        <div class="price-sub">Forever, no card needed</div>
+        <div class="price"><span class="currency">$</span>0<span class="period">/forever</span></div>
+        <ul class="features">
+          <li>All core extension features</li>
+          <li>Cron API: 100 requests/hour</li>
+          <li>Community support via GitHub</li>
+          <li>MIT licensed, open source</li>
+        </ul>
+        <a href="/" class="btn btn-outline" style="display:block;text-align:center;">Browse Extensions</a>
+        <p class="note">No upgrade required to keep using free features</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container how-it-works">
+    <h2>How activation works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Subscribe</h4>
+        <p>Click any buy button above. You'll get an email receipt and your license key is issued automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Open the extension</h4>
+        <p>In VS Code, use the command "TakeASeat: Enter License Key" and paste your key.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Pro unlocks instantly</h4>
+        <p>Pro features activate immediately. Validation is cached for 24 hours, so it works offline too.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container individual-section" id="individual">
+    <h2>Per-extension Pro</h2>
+    <p class="sub">Only need one extension's Pro features? Pick it below.</p>
+    <div class="ext-grid">
+
+      <div class="ext-card">
+        <h4>🔄 Env Diff Pro</h4>
+        <div class="ext-price">$4<span class="period">/mo</span></div>
+        <ul>
+          <li>Batch compare (matrix view)</li>
+          <li>Multi-environment drift detection</li>
+        </ul>
+        <a href="https://buy.stripe.com/14AbJ0bpA5TtfXVdQv9Zm00" class="btn btn-primary" target="_blank" rel="noopener">Subscribe</a>
+      </div>
+
+      <div class="ext-card">
+        <h4>⏰ Cron Helper Pro</h4>
+        <div class="ext-price">$4<span class="period">/mo</span></div>
+        <ul>
+          <li>Validation insights</li>
+          <li>Extended next-run timeline (100)</li>
+        </ul>
+        <a href="https://buy.stripe.com/6oU9ASeBM5TtbHF8wb9Zm01" class="btn btn-primary" target="_blank" rel="noopener">Subscribe</a>
+      </div>
+
+      <div class="ext-card">
+        <h4>🔐 Env Sync Pro</h4>
+        <div class="ext-price">$5<span class="period">/mo</span></div>
+        <ul>
+          <li>Coverage report</li>
+          <li>Team sync + cloud validation</li>
+        </ul>
+        <a href="https://buy.stripe.com/8x2dR8ctE3LleTR7s79Zm02" class="btn btn-primary" target="_blank" rel="noopener">Subscribe</a>
+      </div>
+
+      <div class="ext-card">
+        <h4>📊 Bundle Size Pro</h4>
+        <div class="ext-price">$6<span class="period">/mo</span></div>
+        <ul>
+          <li>Trend snapshots over time</li>
+          <li>CI size-gate thresholds</li>
+        </ul>
+        <a href="https://buy.stripe.com/00w4gyctEdlV4fdcMr9Zm03" class="btn btn-primary" target="_blank" rel="noopener">Subscribe</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item">
+      <h3>What happens if the license server is down?</h3>
+      <p>Pro features keep working. Validation is cached for 24 hours and license keys are cryptographically signed, so a server outage never locks paying users out.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Can I use my license on multiple machines?</h3>
+      <p>Yes — each license supports 3 machine activations. If you need more (e.g. a build server), contact support.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What's the refund policy?</h3>
+      <p>If a Pro feature isn't working as described, email within 14 days for a full refund. No questions asked.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Do free features stop working if I don't subscribe?</h3>
+      <p>Never. The free tier is permanent and fully functional. Pro only adds advanced features on top.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>TakeASeat DevTools Pro · Secure checkout via Stripe · Cancel anytime</p>
+      <p style="margin-top:8px;">&copy; 2026 TakeASeat. <a href="/">Home</a> · <a href="#pricing">Pricing</a></p>
+    </div>
+  </footer>
+</body>
+</html>

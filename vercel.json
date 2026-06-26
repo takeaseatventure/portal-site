@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "public": true,
+  "builds": [
+    { "src": "api/validate.js", "use": "@vercel/node" },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "pro.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/v1/validate", "dest": "/api/validate.js" },
+    { "src": "/v1/activate", "dest": "/api/validate.js" },
+    { "src": "/v1/health", "dest": "/api/validate.js" },
+    { "src": "/pro", "dest": "/pro.html" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
