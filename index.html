@@ -412,6 +412,30 @@
       </div>
     </section>
 
+    <section class="section" id="pdffleet">
+      <div class="wrap api">
+        <div class="terminal">
+          <div class="tbar"><i></i><i></i><i></i></div>
+<pre><span class="c-comment"># render HTML → PDF</span>
+<span class="c-prompt">$</span> curl -X POST <span class="c-str">pdffleet.com/v1/pdf</span> \
+  -H <span class="c-str">"Authorization: Bearer &lt;key&gt;"</span> \
+  -d <span class="c-str">'{"html":"&lt;h1&gt;Invoice&lt;/h1&gt;"}'</span> \
+  -o invoice.pdf
+
+<span class="c-comment"># 50 free/mo · $9/mo for 2,000 · $29/mo for 50,000</span></pre>
+        </div>
+        <div class="copy">
+          <span class="eyebrow">Self-hosted API · live</span>
+          <h2>PDFFleet — HTML-to-PDF at half the price.</h2>
+          <p>A fast PDF-rendering API on our own bare-metal Chromium. Same engine as APITemplate and PDFMonkey, 50–70% cheaper because there's no cloud markup. The undercut thesis, shipped: free tier, API-key auth, usage metering.</p>
+          <div class="row">
+            <a href="https://pdffleet.com" class="btn btn-solid" target="_blank" rel="noopener">pdffleet.com →</a>
+            <a href="https://pdffleet.com/alternatives/apitemplate" class="btn btn-ghost" target="_blank" rel="noopener">vs APITemplate</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="wrap">
         <div class="pricing-strip">
@@ -437,6 +461,7 @@
         <a href="#extensions">Extensions</a>
         <a href="/pro">Pro</a>
         <a href="#api">Cron API</a>
+        <a href="https://pdffleet.com" target="_blank" rel="noopener">PDFFleet ↗</a>
         <a href="https://marketplace.visualstudio.com/publishers/takeaseat-venture" target="_blank" rel="noopener">Marketplace ↗</a>
       </div>
     </div>
