@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>takeaseat DevTools — small VS Code extensions for config you keep getting wrong</title>
-  <meta name="description" content="Five small, zero-dependency VS Code extensions for the config chores that bite: env drift, cron syntax, bundle bloat, and TODO debt. Free to install, Pro when you outgrow free. Plus a free cron validation API.">
-  <meta name="keywords" content="vscode extensions, env diff, cron helper, bundle size, developer tools, cron api, environment variables, dotenv">
-  <meta property="og:title" content="takeaseat DevTools — your config, made legible">
-  <meta property="og:description" content="Five small, zero-dependency VS Code extensions for the config chores that bite. Free to install, Pro when you need more.">
+  <title>cloudcost-doctor — find cloud waste before you deploy it</title>
+  <meta name="description" content="Audit your Terraform and CloudFormation for cloud cost anti-patterns — overprovisioned instances, expensive storage, idle resources, missing lifecycle policies. No AWS credentials, zero dependencies, works offline. 50+ rules.">
+  <meta name="keywords" content="cloud cost, finops, aws cost optimization, terraform audit, cost audit, infrastructure as code, cloud waste, finops tool">
+  <meta property="og:title" content="cloudcost-doctor — find cloud waste before you deploy it">
+  <meta property="og:description" content="Audit Terraform/CloudFormation for cost anti-patterns before deployment. 50+ rules, zero dependencies, no AWS credentials. Open source.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://takeaseatventure.com/">
   <link rel="canonical" href="https://takeaseatventure.com/">
@@ -245,37 +245,36 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div>
-          <div class="hero-eyebrow"><span class="dot"></span><span class="eyebrow">VS Code extensions · MIT · no telemetry</span></div>
-          <h1>Your config,<br>made <span class="legible">legible</span>.</h1>
-          <p class="lede">Five small, zero-dependency VS Code extensions for the chores that quietly cause outages — env drift, cron syntax, bundle bloat, and TODO debt. Free to install. Pro when you outgrow free.</p>
+          <div class="hero-eyebrow"><span class="dot"></span><span class="eyebrow">cloud cost audit · MIT · zero deps · no AWS creds</span></div>
+          <h1>Find cloud waste<br>before you <span class="legible">deploy it</span>.</h1>
+          <p class="lede">cloudcost-doctor reads your Terraform &amp; CloudFormation and flags cost anti-patterns — overprovisioned instances, expensive storage defaults, idle resources — in your terminal, in under a second. No AWS credentials. No dependencies. Works offline.</p>
           <div class="hero-actions">
-            <a href="#extensions" class="btn btn-solid">Browse the five →</a>
-            <a href="/pro" class="btn btn-ghost">See pricing</a>
+            <a href="https://github.com/takeaseatventure/cloudcost-doctor" class="btn btn-solid" target="_blank" rel="noopener">Get it on GitHub →</a>
+            <a href="/pro" class="btn btn-ghost">Pro tier</a>
           </div>
           <div class="specs">
+            <span>50+ cost rules</span>
             <span>Zero dependencies</span>
-            <span>Tiny install</span>
-            <span>465 tests passing</span>
-            <span>Open source</span>
+            <span>30 tests passing</span>
+            <span>MIT open source</span>
           </div>
         </div>
 
-        <div class="diff" aria-label="Example .env diff produced by the Env Diff extension">
+        <div class="diff" aria-label="Example cloudcost-doctor audit report">
           <div class="diff-bar">
             <span class="tt"></span><span class="tt"></span><span class="tt"></span>
-            <span class="file"><b>.env.local</b> ⇄ <b>.env.production</b></span>
+            <span class="file"><b>main.tf</b> — cost audit</span>
           </div>
           <div class="diff-body">
-            <div class="diff-line ctx" style="animation-delay:.05s"><span class="sign"> </span><span class="code">DATABASE_URL=postgres://db.internal:5432</span></div>
-            <div class="diff-line del" style="animation-delay:.18s"><span class="sign">−</span><span class="code">STRIPE_KEY=sk_test_4eC39H…</span></div>
-            <div class="diff-line add" style="animation-delay:.30s"><span class="sign">+</span><span class="code">STRIPE_KEY=sk_live_51Mx8z…</span></div>
-            <div class="diff-line del" style="animation-delay:.42s"><span class="sign">−</span><span class="code">LOG_LEVEL=debug</span></div>
-            <div class="diff-line add" style="animation-delay:.54s"><span class="sign">+</span><span class="code">LOG_LEVEL=warn</span></div>
-            <div class="diff-line ctx" style="animation-delay:.66s"><span class="sign"> </span><span class="code">REDIS_URL=redis://cache.internal</span></div>
-            <div class="diff-line miss" style="animation-delay:.80s"><span class="sign">~</span><span class="code">SENTRY_DSN  — set in prod, missing in local</span></div>
+            <div class="diff-line del" style="animation-delay:.05s"><span class="sign">⚠</span><span class="code">EC2.01  t2.micro → t3.micro  ~$8-40/mo</span></div>
+            <div class="diff-line del" style="animation-delay:.18s"><span class="sign">⚠</span><span class="code">EBS.01  gp2 volume → gp3     ~$10-12/mo</span></div>
+            <div class="diff-line miss" style="animation-delay:.30s"><span class="sign">!</span><span class="code">RDS.01  Multi-AZ in dev      ~$100-1000/mo</span></div>
+            <div class="diff-line miss" style="animation-delay:.42s"><span class="sign">!</span><span class="code">NAT.01  NAT Gateway in dev   ~$32-100/mo</span></div>
+            <div class="diff-line add" style="animation-delay:.54s"><span class="sign">+</span><span class="code">S3.01   No lifecycle policy  ~$20-200/mo</span></div>
+            <div class="diff-line add" style="animation-delay:.66s"><span class="sign">+</span><span class="code">CW.01   No log retention     ~$5-100/mo</span></div>
           </div>
           <div class="diff-foot">
-            <span><b class="g">2 added</b></span><span><b class="r">2 changed</b></span><span><b>1 missing</b> in .env.local</span>
+            <span><b class="r">25 findings</b></span><span><b>Est. savings: ~$347-2,538/mo</b></span>
           </div>
         </div>
       </div>
