@@ -3,291 +3,443 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TakeASeat DevTools — VS Code Extensions &amp; Developer APIs</title>
-  <meta name="description" content="Lightweight, zero-dependency VS Code extensions for env management, cron scheduling, bundle analysis, and technical debt. Free with optional Pro. Plus a free cron validation API.">
-  <meta name="keywords" content="vscode extensions, env diff, cron helper, bundle size, developer tools, cron api, environment variables">
-  <meta property="og:title" content="TakeASeat DevTools — Developer Tools for VS Code">
-  <meta property="og:description" content="Lightweight, zero-dependency VS Code extensions. Free with optional Pro features.">
+  <title>TakeASeat DevTools — small VS Code extensions for config you keep getting wrong</title>
+  <meta name="description" content="Five small, zero-dependency VS Code extensions for the config chores that bite: env drift, cron syntax, bundle bloat, and TODO debt. Free to install, Pro when you outgrow free. Plus a free cron validation API.">
+  <meta name="keywords" content="vscode extensions, env diff, cron helper, bundle size, developer tools, cron api, environment variables, dotenv">
+  <meta property="og:title" content="TakeASeat DevTools — your config, made legible">
+  <meta property="og:description" content="Five small, zero-dependency VS Code extensions for the config chores that bite. Free to install, Pro when you need more.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://takeaseatventure.com/">
   <link rel="canonical" href="https://takeaseatventure.com/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2318211D'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' fill='%23EBEAE3' text-anchor='middle'%3E%C2%B1%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #0d1117; --card: #161b22; --border: #30363d;
-      --accent: #58a6ff; --text: #e6edf3; --text-muted: #8b949e;
-      --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff;
+      --paper: #EBEAE3;
+      --paper-2: #E3E2D9;
+      --panel: #F3F2EC;
+      --ink: #18211D;
+      --ink-2: #39413B;
+      --ink-soft: #6C726A;
+      --rule: #CDCCC1;
+      --rule-strong: #B7B6AA;
+      --add: #2C6E49;
+      --add-bg: rgba(44,110,73,0.10);
+      --del: #B23A2E;
+      --del-bg: rgba(178,58,46,0.09);
+      --signal: #0F6B57;
+      --display: 'Space Grotesk', system-ui, sans-serif;
+      --body: 'IBM Plex Sans', system-ui, sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
     }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-      background: var(--bg); color: var(--text); line-height: 1.6;
+      font-family: var(--body);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    .container { max-width: 968px; margin: 0 auto; padding: 0 24px; }
-    header {
-      border-bottom: 1px solid var(--border); padding: 16px 0;
-      position: sticky; top: 0; background: rgba(13,17,23,0.92); backdrop-filter: blur(8px); z-index: 100;
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+    .eyebrow {
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft);
     }
-    header .container { display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-size: 1.25rem; font-weight: 700; color: var(--text); text-decoration: none; }
-    .logo span { color: var(--accent); }
-    .header-actions { display: flex; gap: 16px; align-items: center; }
+    a { color: inherit; }
+
+    /* ---------- header ---------- */
+    .site-head {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(235,234,227,0.86); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .site-head .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 1.04rem; letter-spacing: -0.01em; text-decoration: none; }
+    .brand .mark {
+      width: 26px; height: 26px; border-radius: 6px; background: var(--ink); color: var(--paper);
+      display: grid; place-items: center; font-family: var(--mono); font-size: 1rem; font-weight: 600;
+    }
+    .brand .dim { color: var(--ink-soft); font-weight: 500; }
+    .nav { display: flex; align-items: center; gap: 28px; }
+    .nav a { font-family: var(--mono); font-size: 0.82rem; text-decoration: none; color: var(--ink-2); transition: color .15s; }
+    .nav a:hover { color: var(--ink); }
+    .nav .nav-cta {
+      font-family: var(--mono); font-size: 0.8rem; color: var(--paper); background: var(--ink);
+      padding: 7px 15px; border-radius: 7px; transition: background .15s;
+    }
+    .nav .nav-cta:hover { background: var(--signal); color: #fff; }
+    @media (max-width: 700px) { .nav .nav-link { display: none; } }
+
+    /* ---------- buttons ---------- */
     .btn {
-      display: inline-block; padding: 8px 20px; border-radius: 6px;
-      font-weight: 600; text-decoration: none; font-size: 0.9rem; transition: 0.2s;
-      border: 1px solid transparent; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 0.88rem; font-weight: 500;
+      padding: 12px 22px; border-radius: 8px; text-decoration: none;
+      border: 1px solid transparent; cursor: pointer; transition: all .16s ease;
     }
-    .btn-primary { background: var(--accent); color: var(--bg); }
-    .btn-primary:hover { background: #79b8ff; }
-    .btn-outline { border-color: var(--border); color: var(--text); }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-    .hero { padding: 80px 0 60px; text-align: center; }
-    .hero h1 { font-size: 2.8rem; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.03em; }
-    .hero h1 .grad { background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 620px; margin: 0 auto 32px; }
-    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .hero-actions .btn { padding: 12px 28px; font-size: 1rem; }
-    .badges { display: flex; gap: 24px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
-    .badge { color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 6px; }
-    .products { padding: 40px 0 60px; }
-    .section-title { text-align: center; margin-bottom: 48px; }
-    .section-title h2 { font-size: 2rem; margin-bottom: 8px; }
-    .section-title p { color: var(--text-muted); }
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-    .product-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-      padding: 32px 24px; transition: 0.2s; position: relative; display: flex; flex-direction: column;
+    .btn-solid { background: var(--ink); color: var(--paper); }
+    .btn-solid:hover { background: var(--signal); color: #fff; transform: translateY(-1px); }
+    .btn-ghost { border-color: var(--rule-strong); color: var(--ink); }
+    .btn-ghost:hover { border-color: var(--ink); background: var(--paper-2); }
+
+    /* ---------- hero ---------- */
+    .hero { padding: 84px 0 64px; }
+    .hero-grid { display: grid; grid-template-columns: 1.02fr 1fr; gap: 56px; align-items: center; }
+    .hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+    .hero-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--signal); display: inline-block; }
+    .hero h1 {
+      font-family: var(--display); font-weight: 700; font-size: clamp(2.5rem, 5.4vw, 4rem);
+      line-height: 1.03; letter-spacing: -0.025em; margin-bottom: 22px;
     }
-    .product-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .product-icon { font-size: 2.5rem; margin-bottom: 16px; }
-    .product-card h3 { font-size: 1.3rem; margin-bottom: 8px; }
-    .product-card .desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; min-height: 48px; }
-    .product-features { list-style: none; margin-bottom: 24px; flex-grow: 1; }
-    .product-features li { padding: 4px 0; font-size: 0.9rem; color: var(--text); display: flex; align-items: flex-start; gap: 8px; }
-    .product-features li::before { content: "✓"; color: var(--green); font-weight: bold; flex-shrink: 0; }
-    .product-card .tag {
-      display: inline-block; padding: 2px 10px; border-radius: 20px;
-      font-size: 0.75rem; font-weight: 600; margin-bottom: 12px; align-self: flex-start;
+    .hero h1 .legible {
+      position: relative; white-space: nowrap;
+      background: linear-gradient(transparent 62%, rgba(15,107,87,0.22) 62%);
     }
-    .tag-free { background: rgba(63, 185, 80, 0.15); color: var(--green); }
-    .tag-new { background: rgba(88, 166, 255, 0.15); color: var(--accent); }
-    .product-footer { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
-    .product-footer .pricing { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
-    .product-footer .pricing strong { color: var(--text); }
-    .install-link { display: block; color: var(--accent); font-size: 0.85rem; text-decoration: none; margin-top: 4px; word-break: break-all; }
-    .install-link:hover { text-decoration: underline; }
-    .pro-section {
-      background: linear-gradient(135deg, var(--card), #1a1f2e); border: 1px solid var(--border); border-radius: 16px;
-      padding: 48px; margin: 40px 0; text-align: center;
+    .hero .lede { font-size: 1.12rem; color: var(--ink-2); max-width: 30em; margin-bottom: 30px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 34px; }
+    .specs { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+    .specs span { font-family: var(--mono); font-size: 0.76rem; color: var(--ink-soft); display: inline-flex; align-items: center; gap: 7px; }
+    .specs span::before { content: ""; width: 5px; height: 5px; background: var(--rule-strong); display: inline-block; }
+
+    /* ---------- diff artifact (hero signature) ---------- */
+    .diff {
+      background: var(--panel); border: 1px solid var(--rule-strong); border-radius: 12px;
+      box-shadow: 0 1px 0 var(--rule), 0 24px 48px -28px rgba(24,33,29,0.4);
+      overflow: hidden; font-family: var(--mono); font-size: 0.85rem;
     }
-    .pro-section h2 { font-size: 2rem; margin-bottom: 12px; }
-    .pro-section .sub { color: var(--text-muted); margin-bottom: 32px; max-width: 540px; margin-left: auto; margin-right: auto; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; max-width: 800px; margin: 0 auto; text-align: left; }
-    .price-card {
-      background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 32px;
+    .diff-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--rule); background: var(--paper-2); }
+    .diff-bar .tt { width: 11px; height: 11px; border-radius: 50%; border: 1px solid var(--rule-strong); }
+    .diff-bar .file { margin-left: 8px; font-size: 0.76rem; color: var(--ink-soft); letter-spacing: 0.02em; }
+    .diff-bar .file b { color: var(--ink-2); font-weight: 600; }
+    .diff-body { padding: 14px 0; }
+    .diff-line { display: grid; grid-template-columns: 26px 1fr; padding: 3px 16px; white-space: pre; overflow-x: auto; }
+    .diff-line .sign { color: var(--ink-soft); user-select: none; }
+    .diff-line.add { background: var(--add-bg); }
+    .diff-line.add .sign { color: var(--add); }
+    .diff-line.add .code { color: var(--add); }
+    .diff-line.del { background: var(--del-bg); }
+    .diff-line.del .sign { color: var(--del); }
+    .diff-line.del .code { color: var(--del); text-decoration: line-through; text-decoration-color: rgba(178,58,46,0.4); }
+    .diff-line.ctx .code { color: var(--ink-2); }
+    .diff-line.miss .sign { color: #B07A14; }
+    .diff-line.miss .code { color: #8A6310; }
+    .diff-foot { display: flex; gap: 18px; padding: 11px 16px; border-top: 1px solid var(--rule); background: var(--paper-2); font-size: 0.74rem; color: var(--ink-soft); }
+    .diff-foot b { font-weight: 600; }
+    .diff-foot .g { color: var(--add); }
+    .diff-foot .r { color: var(--del); }
+
+    /* line reveal animation */
+    .diff-line { opacity: 0; transform: translateY(4px); animation: lineIn .42s cubic-bezier(.2,.7,.3,1) forwards; }
+    @keyframes lineIn { to { opacity: 1; transform: none; } }
+
+    /* ---------- section scaffolding ---------- */
+    .section { padding: 30px 0 64px; }
+    .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 26px; margin-bottom: 38px; border-bottom: 1px solid var(--rule); }
+    .sec-head h2 { font-family: var(--display); font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.1rem); letter-spacing: -0.02em; }
+    .sec-head .eyebrow { display: block; margin-bottom: 10px; }
+    .sec-head .aside { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-soft); white-space: nowrap; }
+    @media (max-width: 620px) { .sec-head { flex-direction: column; gap: 6px; } .sec-head .aside { display: none; } }
+
+    /* ---------- catalog ---------- */
+    .catalog { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .tool {
+      display: flex; flex-direction: column; background: var(--panel);
+      border: 1px solid var(--rule); border-radius: 12px; padding: 24px 24px 20px;
+      transition: border-color .16s, transform .16s, box-shadow .16s;
     }
-    .price-card.featured { border-color: var(--accent); position: relative; box-shadow: 0 0 0 3px rgba(88,166,255,0.12); }
-    .price-card.featured::before {
-      content: "BEST VALUE"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-      background: var(--accent); color: var(--bg); padding: 4px 16px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;
+    .tool:hover { border-color: var(--ink); transform: translateY(-3px); box-shadow: 0 18px 40px -30px rgba(24,33,29,0.55); }
+    .tool-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .tool-slug { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; color: var(--ink-soft); text-transform: uppercase; }
+    .tool-flag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; padding: 3px 9px; border-radius: 20px; border: 1px solid var(--signal); color: var(--signal); letter-spacing: 0.04em; }
+    .artifact {
+      font-family: var(--mono); font-size: 0.84rem; color: var(--ink-2);
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 7px;
+      padding: 9px 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; min-height: 40px;
     }
-    .price-card h3 { font-size: 1.2rem; margin-bottom: 8px; text-align: center; }
-    .price-card .price { font-size: 2.5rem; font-weight: 700; margin: 16px 0; text-align: center; }
-    .price-card .price .period { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; }
-    .price-card .features { list-style: none; margin: 24px 0; }
-    .price-card .features li { padding: 6px 0; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 8px; }
-    .price-card .features li::before { content: "✓"; color: var(--green); font-weight: bold; flex-shrink: 0; }
-    .price-card .btn { display: block; width: 100%; text-align: center; }
-    .price-card .note { color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-top: 12px; }
-    .api-section {
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 48px; margin: 40px 0;
+    .artifact .plus { color: var(--add); } .artifact .minus { color: var(--del); }
+    .bar { display: inline-flex; gap: 3px; }
+    .bar i { width: 9px; height: 13px; background: var(--rule-strong); display: inline-block; border-radius: 1px; }
+    .bar i.on { background: var(--ink-2); }
+    .tool h3 { font-family: var(--display); font-weight: 600; font-size: 1.22rem; letter-spacing: -0.01em; margin-bottom: 6px; }
+    .tool .blurb { font-size: 0.94rem; color: var(--ink-2); margin-bottom: 16px; }
+    .tool ul { list-style: none; margin-bottom: 20px; }
+    .tool ul li { font-family: var(--mono); font-size: 0.79rem; color: var(--ink-2); padding: 3px 0 3px 18px; position: relative; }
+    .tool ul li::before { content: "+"; position: absolute; left: 0; color: var(--add); font-weight: 600; }
+    .tool-foot { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .tool-price { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-soft); }
+    .tool-price b { color: var(--ink); font-weight: 600; }
+    .install { font-family: var(--mono); font-size: 0.82rem; font-weight: 500; text-decoration: none; color: var(--ink); border-bottom: 1.5px solid var(--signal); padding-bottom: 1px; white-space: nowrap; transition: color .15s; }
+    .install:hover { color: var(--signal); }
+    @media (max-width: 720px) { .catalog { grid-template-columns: 1fr; } }
+
+    /* ---------- API ---------- */
+    .api { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
+    .api .copy h2 { font-family: var(--display); font-weight: 600; font-size: 1.9rem; letter-spacing: -0.02em; margin: 12px 0 14px; }
+    .api .copy p { color: var(--ink-2); margin-bottom: 22px; max-width: 34em; }
+    .api .copy .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .terminal {
+      background: var(--ink); border-radius: 12px; overflow: hidden;
+      box-shadow: 0 24px 48px -30px rgba(24,33,29,0.7); font-family: var(--mono); font-size: 0.82rem;
     }
-    .api-section h2 { font-size: 1.8rem; margin-bottom: 12px; text-align: center; }
-    .api-section .sub { color: var(--text-muted); margin-bottom: 32px; text-align: center; max-width: 560px; margin-left: auto; margin-right: auto; }
-    .api-code { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; font-family: 'SF Mono', Menlo, monospace; font-size: 0.85rem; overflow-x: auto; margin: 24px 0; }
-    .api-code .comment { color: var(--text-muted); }
-    .api-code .key { color: var(--purple); }
-    .api-code .str { color: var(--green); }
-    .cta { text-align: center; padding: 60px 0 40px; }
-    .cta h2 { font-size: 2rem; margin-bottom: 16px; }
-    .cta p { color: var(--text-muted); margin-bottom: 24px; }
-    .faq { padding: 40px 0; }
-    .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; }
-    .faq-item h3 { font-size: 1.05rem; margin-bottom: 8px; }
-    .faq-item p { color: var(--text-muted); font-size: 0.95rem; }
-    footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
-    footer a { color: var(--accent); text-decoration: none; }
-    @media (max-width: 640px) {
-      .hero { padding: 56px 0 40px; }
-      .hero h1 { font-size: 2rem; }
-      .hero p { font-size: 1rem; }
-      .pro-section, .api-section { padding: 32px 20px; }
+    .terminal .tbar { display: flex; gap: 7px; padding: 12px 16px; border-bottom: 1px solid rgba(235,234,227,0.12); }
+    .terminal .tbar i { width: 10px; height: 10px; border-radius: 50%; background: rgba(235,234,227,0.22); }
+    .terminal pre { padding: 18px 18px 20px; color: #D7DAD2; overflow-x: auto; line-height: 1.7; }
+    .terminal .c-prompt { color: var(--signal); }
+    .terminal .c-comment { color: #7E857B; }
+    .terminal .c-key { color: #9FD0BF; }
+    .terminal .c-str { color: #C9D6A6; }
+    .terminal .c-warn { color: #E0A85B; }
+    @media (max-width: 760px) { .api { grid-template-columns: 1fr; gap: 26px; } }
+
+    /* ---------- pricing strip ---------- */
+    .pricing-strip {
+      display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+      background: var(--ink); color: var(--paper); border-radius: 16px; padding: 38px 40px;
+    }
+    .pricing-strip h2 { font-family: var(--display); font-weight: 600; font-size: 1.7rem; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .pricing-strip p { font-family: var(--mono); font-size: 0.84rem; color: rgba(235,234,227,0.66); }
+    .pricing-strip .nums { display: flex; gap: 32px; }
+    .pricing-strip .num b { font-family: var(--display); font-size: 1.9rem; display: block; }
+    .pricing-strip .num span { font-family: var(--mono); font-size: 0.72rem; color: rgba(235,234,227,0.6); letter-spacing: 0.08em; text-transform: uppercase; }
+    .pricing-strip .btn-solid { background: var(--paper); color: var(--ink); }
+    .pricing-strip .btn-solid:hover { background: #fff; color: var(--ink); }
+
+    /* ---------- footer ---------- */
+    .site-foot { border-top: 1px solid var(--rule); padding: 40px 0 56px; margin-top: 40px; }
+    .site-foot .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .site-foot .meta { font-family: var(--mono); font-size: 0.76rem; color: var(--ink-soft); }
+    .site-foot .links { display: flex; gap: 22px; }
+    .site-foot .links a { font-family: var(--mono); font-size: 0.78rem; text-decoration: none; color: var(--ink-2); }
+    .site-foot .links a:hover { color: var(--signal); }
+
+    :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 3px; }
+
+    @media (max-width: 880px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hero { padding: 56px 0 48px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .diff-line { animation: none !important; opacity: 1; transform: none; }
+      .btn:hover, .tool:hover { transform: none; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <a href="/" class="logo">TakeASeat<span>DevTools</span></a>
-      <div class="header-actions">
-        <a href="/pro" class="btn btn-outline">Pro</a>
-        <a href="#extensions" class="btn btn-primary">Extensions</a>
-      </div>
+  <header class="site-head">
+    <div class="wrap">
+      <a href="/" class="brand"><span class="mark">±</span>takeaseat<span class="dim">/devtools</span></a>
+      <nav class="nav">
+        <a class="nav-link" href="#extensions">Extensions</a>
+        <a class="nav-link" href="#api">API</a>
+        <a class="nav-cta" href="/pro">Pro &amp; pricing</a>
+      </nav>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="container">
-      <h1>Developer tools that <span class="grad">just work</span></h1>
-      <p>Lightweight, zero-dependency VS Code extensions for environment management, cron scheduling, bundle analysis, and technical-debt tracking. Free forever, with optional Pro features. Plus a free cron validation API.</p>
-      <div class="hero-actions">
-        <a href="#extensions" class="btn btn-primary">Browse Extensions</a>
-        <a href="/pro" class="btn btn-outline">Compare Pro Tiers</a>
-      </div>
-      <div class="badges">
-        <span class="badge">⚡ Zero dependencies</span>
-        <span class="badge">🔒 MIT Licensed</span>
-        <span class="badge">📦 Tiny install size</span>
-        <span class="badge">✅ Fully tested</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="products" id="extensions">
-    <div class="container">
-      <div class="section-title">
-        <h2>Free VS Code Extensions</h2>
-        <p>Install directly from the Marketplace — completely free</p>
-      </div>
-      <div class="product-grid">
-
-        <div class="product-card">
-          <span class="tag tag-new">Blue Ocean</span>
-          <div class="product-icon">🔄</div>
-          <h3>Env Diff</h3>
-          <p class="desc">Compare .env files side-by-side. Instantly spot missing, extra, and changed environment variables between dev, staging, and production. Never deploy with a missing config again.</p>
-          <ul class="product-features">
-            <li>Side-by-side .env comparison</li>
-            <li>Highlight missing &amp; extra variables</li>
-            <li>Detect changed values</li>
-            <li>Sort .env files alphabetically</li>
-          </ul>
-          <div class="product-footer">
-            <div class="pricing"><strong>Free</strong> core · Pro: batch compare + drift detection ($4/mo)</div>
-            <a class="install-link" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.env-diff">↗ Install from Marketplace</a>
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="hero-eyebrow"><span class="dot"></span><span class="eyebrow">VS Code extensions · MIT · no telemetry</span></div>
+          <h1>Your config,<br>made <span class="legible">legible</span>.</h1>
+          <p class="lede">Five small, zero-dependency VS Code extensions for the chores that quietly cause outages — env drift, cron syntax, bundle bloat, and TODO debt. Free to install. Pro when you outgrow free.</p>
+          <div class="hero-actions">
+            <a href="#extensions" class="btn btn-solid">Browse the five →</a>
+            <a href="/pro" class="btn btn-ghost">See pricing</a>
+          </div>
+          <div class="specs">
+            <span>Zero dependencies</span>
+            <span>Tiny install</span>
+            <span>465 tests passing</span>
+            <span>Open source</span>
           </div>
         </div>
 
-        <div class="product-card">
-          <span class="tag tag-new">Underserved Niche</span>
-          <div class="product-icon">⏰</div>
-          <h3>Cron Helper</h3>
-          <p class="desc">Build, explain, validate, and preview cron schedules right in VS Code. Human-readable descriptions, next-run calculator, preset library, and Pro validation insights for impossible-schedule detection.</p>
-          <ul class="product-features">
-            <li>Human-readable cron descriptions</li>
-            <li>Next-run calculator (free: 5 runs)</li>
-            <li>Preset library (30+ common schedules)</li>
-            <li>Crontab.guru alternative — in your editor</li>
-          </ul>
-          <div class="product-footer">
-            <div class="pricing"><strong>Free</strong> core · Pro: validation insights + timeline ($4/mo)</div>
-            <a class="install-link" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.cron-helper">↗ Install from Marketplace</a>
+        <div class="diff" aria-label="Example .env diff produced by the Env Diff extension">
+          <div class="diff-bar">
+            <span class="tt"></span><span class="tt"></span><span class="tt"></span>
+            <span class="file"><b>.env.local</b> ⇄ <b>.env.production</b></span>
+          </div>
+          <div class="diff-body">
+            <div class="diff-line ctx" style="animation-delay:.05s"><span class="sign"> </span><span class="code">DATABASE_URL=postgres://db.internal:5432</span></div>
+            <div class="diff-line del" style="animation-delay:.18s"><span class="sign">−</span><span class="code">STRIPE_KEY=sk_test_4eC39H…</span></div>
+            <div class="diff-line add" style="animation-delay:.30s"><span class="sign">+</span><span class="code">STRIPE_KEY=sk_live_51Mx8z…</span></div>
+            <div class="diff-line del" style="animation-delay:.42s"><span class="sign">−</span><span class="code">LOG_LEVEL=debug</span></div>
+            <div class="diff-line add" style="animation-delay:.54s"><span class="sign">+</span><span class="code">LOG_LEVEL=warn</span></div>
+            <div class="diff-line ctx" style="animation-delay:.66s"><span class="sign"> </span><span class="code">REDIS_URL=redis://cache.internal</span></div>
+            <div class="diff-line miss" style="animation-delay:.80s"><span class="sign">~</span><span class="code">SENTRY_DSN  — set in prod, missing in local</span></div>
+          </div>
+          <div class="diff-foot">
+            <span><b class="g">2 added</b></span><span><b class="r">2 changed</b></span><span><b>1 missing</b> in .env.local</span>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="product-card">
-          <div class="product-icon">🔐</div>
-          <h3>Env Sync Pro</h3>
-          <p class="desc">Generate .env.example files from your .env. Keep environment documentation in sync. Supports 7 language-specific formats (Node, Python, Ruby, Go, Rust, Java, PHP).</p>
-          <ul class="product-features">
-            <li>Auto-generate .env.example</li>
-            <li>7 language output formats</li>
-            <li>Detect sensitive key names</li>
-            <li>Template customization</li>
-          </ul>
-          <div class="product-footer">
-            <div class="pricing"><strong>Free</strong> core · Pro: coverage report + team sync ($5/mo)</div>
-            <a class="install-link" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.envsync-pro">↗ Install from Marketplace</a>
+    <section class="section" id="extensions">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <span class="eyebrow">The catalog</span>
+            <h2>Five tools. Each does one thing well.</h2>
           </div>
+          <span class="aside">install free ↗ marketplace</span>
         </div>
 
-        <div class="product-card">
-          <div class="product-icon">📊</div>
-          <h3>Bundle Size Analyzer</h3>
-          <p class="desc">Find bloated files, large imports, and disk hogs in your project instantly. See file sizes at a glance in a tree view with category breakdowns and threshold alerts.</p>
-          <ul class="product-features">
-            <li>Tree view of largest files</li>
-            <li>Configurable size thresholds</li>
-            <li>Exclude patterns (node_modules, etc.)</li>
-            <li>Quick-open large files</li>
-          </ul>
-          <div class="product-footer">
-            <div class="pricing"><strong>Free</strong> core · Pro: trend snapshots + CI gates ($6/mo)</div>
-            <a class="install-link" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.bundle-size-analyzer">↗ Install from Marketplace</a>
+        <div class="catalog">
+
+          <article class="tool">
+            <div class="tool-top"><span class="tool-slug">env · diff</span><span class="tool-flag">Blue ocean</span></div>
+            <div class="artifact"><span class="minus">−</span> .env.local <span style="color:var(--ink-soft)">vs</span> .env.prod <span class="plus">+</span></div>
+            <h3>Env Diff</h3>
+            <p class="blurb">Compare <code>.env</code> files side by side. Spot missing, extra, and changed variables across dev, staging, and prod before you ship.</p>
+            <ul>
+              <li>Side-by-side comparison</li>
+              <li>Missing &amp; extra keys flagged</li>
+              <li>Changed-value detection</li>
+            </ul>
+            <div class="tool-foot">
+              <span class="tool-price">Free · Pro <b>$4/mo</b></span>
+              <a class="install" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.env-diff">Install ↗</a>
+            </div>
+          </article>
+
+          <article class="tool">
+            <div class="tool-top"><span class="tool-slug">cron · helper</span><span class="tool-flag">Underserved</span></div>
+            <div class="artifact"><span style="color:var(--ink)">*/5 * * * *</span> <span style="color:var(--ink-soft)">→ every 5 min</span></div>
+            <h3>Cron Helper</h3>
+            <p class="blurb">Build, explain, and preview cron schedules in your editor. Human-readable descriptions, a next-run calculator, and a 30+ preset library.</p>
+            <ul>
+              <li>Plain-English descriptions</li>
+              <li>Next-run calculator</li>
+              <li>Crontab.guru, in VS Code</li>
+            </ul>
+            <div class="tool-foot">
+              <span class="tool-price">Free · Pro <b>$4/mo</b></span>
+              <a class="install" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.cron-helper">Install ↗</a>
+            </div>
+          </article>
+
+          <article class="tool">
+            <div class="tool-top"><span class="tool-slug">env · sync</span><span class="tool-flag">7 formats</span></div>
+            <div class="artifact">.env <span style="color:var(--ink-soft)">→</span> .env.example</div>
+            <h3>Env Sync Pro</h3>
+            <p class="blurb">Generate <code>.env.example</code> from your <code>.env</code> and keep docs in sync. Seven language formats — Node, Python, Ruby, Go, Rust, Java, PHP.</p>
+            <ul>
+              <li>Auto-generate examples</li>
+              <li>Sensitive-key detection</li>
+              <li>Template customization</li>
+            </ul>
+            <div class="tool-foot">
+              <span class="tool-price">Free · Pro <b>$5/mo</b></span>
+              <a class="install" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.envsync-pro">Install ↗</a>
+            </div>
+          </article>
+
+          <article class="tool">
+            <div class="tool-top"><span class="tool-slug">bundle · size</span><span class="tool-flag">CI gates</span></div>
+            <div class="artifact"><span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span> 2.4 MB · vendor.js</div>
+            <h3>Bundle Size Analyzer</h3>
+            <p class="blurb">Find bloated files, heavy imports, and disk hogs instantly. A tree view of your largest files with thresholds and category breakdowns.</p>
+            <ul>
+              <li>Tree of largest files</li>
+              <li>Configurable thresholds</li>
+              <li>Exclude patterns</li>
+            </ul>
+            <div class="tool-foot">
+              <span class="tool-price">Free · Pro <b>$6/mo</b></span>
+              <a class="install" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.bundle-size-analyzer">Install ↗</a>
+            </div>
+          </article>
+
+          <article class="tool">
+            <div class="tool-top"><span class="tool-slug">todo · extract</span><span class="tool-flag">Debt dashboard</span></div>
+            <div class="artifact"><span style="color:var(--del)">// TODO</span> &nbsp; <span style="color:var(--ink-soft)">// FIXME</span> &nbsp; // HACK</div>
+            <h3>TODO Extract</h3>
+            <p class="blurb">Scan your codebase for TODOs, FIXMEs, and debt markers and track them as a structured dashboard — with priority and assignee detection.</p>
+            <ul>
+              <li>TODO / FIXME / HACK / XXX</li>
+              <li>Priority &amp; assignee filters</li>
+              <li>Export to issue format</li>
+            </ul>
+            <div class="tool-foot">
+              <span class="tool-price">Free · Pro <b>$4/mo</b></span>
+              <a class="install" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.todo-extract">Install ↗</a>
+            </div>
+          </article>
+
+          <article class="tool" style="justify-content:center; align-items:flex-start; background:var(--paper-2); border-style:dashed;">
+            <div class="tool-top"><span class="tool-slug">all · access</span></div>
+            <h3 style="margin-top:6px;">Want every Pro feature?</h3>
+            <p class="blurb">One subscription unlocks Pro across all five extensions and the cron API — the cheapest way in if you use more than one.</p>
+            <div class="tool-foot" style="border-top:none; padding-top:8px;">
+              <span class="tool-price">All-Access <b>$8/mo</b></span>
+              <a class="install" href="/pro">Compare tiers ↗</a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="api">
+      <div class="wrap api">
+        <div class="copy">
+          <span class="eyebrow">Also free</span>
+          <h2>A cron API for your pipelines.</h2>
+          <p>A stateless REST endpoint to parse, describe, and validate cron expressions — catching impossible schedules before they reach prod. 100 requests/hour free, $5/mo unlimited.</p>
+          <div class="row">
+            <a href="https://cron-api-six.vercel.app" class="btn btn-solid" target="_blank" rel="noopener">API docs →</a>
+            <a href="https://buy.stripe.com/28E7sKfFQ3LlcLJ8wb9Zm05" class="btn btn-ghost" target="_blank" rel="noopener">Get Pro — $5/mo</a>
           </div>
         </div>
+        <div class="terminal">
+          <div class="tbar"><i></i><i></i><i></i></div>
+<pre><span class="c-comment"># describe a schedule</span>
+<span class="c-prompt">$</span> curl <span class="c-str">'…/api/cron?expr=*/5 * * * *'</span>
+{ <span class="c-key">"description"</span>: <span class="c-str">"Every 5 minutes"</span>,
+  <span class="c-key">"nextRuns"</span>: [<span class="c-str">"12:05"</span>, <span class="c-str">"12:10"</span>, …] }
 
-        <div class="product-card">
-          <div class="product-icon">📋</div>
-          <h3>TODO Extract</h3>
-          <p class="desc">Scan your codebase for TODOs, FIXMEs, and technical-debt markers. Track them as a structured dashboard with priority and assignee detection, not just text highlights.</p>
-          <ul class="product-features">
-            <li>Extract TODOs / FIXMEs / HACKs / XXXs</li>
-            <li>Technical-debt dashboard</li>
-            <li>Filter by priority &amp; assignee</li>
-            <li>Export to issue-tracker format</li>
-          </ul>
-          <div class="product-footer">
-            <div class="pricing"><strong>Free</strong> core · Pro: trend tracking + CI export ($4/mo)</div>
-            <a class="install-link" href="https://marketplace.visualstudio.com/items?itemName=takeaseat-venture.todo-extract">↗ Install from Marketplace</a>
-          </div>
+<span class="c-comment"># catch an impossible schedule</span>
+<span class="c-prompt">$</span> curl <span class="c-str">'…/api/cron/validate?expr=0 0 31 2 *'</span>
+{ <span class="c-key">"valid"</span>: false,
+  <span class="c-warn">"warnings"</span>: [<span class="c-str">"Feb 31 never occurs"</span>] }</pre>
         </div>
-
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="container">
-    <div class="api-section" id="api">
-      <h2>Free Cron Validation API</h2>
-      <p class="sub">A stateless REST API to parse, describe, and validate cron expressions. 100 requests/hour free, $5/mo for unlimited. Great for CI/CD pipelines and dashboards.</p>
-      <div class="api-code">
-<span class="comment"># Parse and describe a cron expression</span>
-$ curl <span class="str">"https://cron-api-six.vercel.app/api/cron?expr=*/5 * * * *"</span>
-{
-  <span class="key">"description"</span>: <span class="str">"Every 5 minutes"</span>,
-  <span class="key">"nextRuns"</span>: [<span class="str">"2026-06-26T12:05:00Z"</span>, <span class="str">"2026-06-26T12:10:00Z"</span>, ...]
-}
-
-<span class="comment"># Deep validation (Pro): catch impossible schedules</span>
-$ curl <span class="str">"https://cron-api-six.vercel.app/api/cron/validate?expr=0 0 31 2 *"</span>
-{
-  <span class="key">"valid"</span>: false,
-  <span class="key">"warnings"</span>: [<span class="str">"Day 31 in February never occurs"</span>]
-}
+    <section class="section">
+      <div class="wrap">
+        <div class="pricing-strip">
+          <div>
+            <h2>Free forever. Pro when you need it.</h2>
+            <p>Every extension's core features are free. No card, no telemetry, no expiry.</p>
+          </div>
+          <div class="nums">
+            <div class="num"><b>$0</b><span>install</span></div>
+            <div class="num"><b>$4</b><span>per-ext pro</span></div>
+            <div class="num"><b>$8</b><span>all-access</span></div>
+          </div>
+          <a href="/pro" class="btn btn-solid">Compare tiers →</a>
+        </div>
       </div>
-      <div style="text-align:center;">
-        <a href="https://cron-api-six.vercel.app" class="btn btn-primary" target="_blank" rel="noopener">View API Docs</a>
-        <a href="https://buy.stripe.com/28E7sKfFQ3LlcLJ8wb9Zm05" class="btn btn-outline" target="_blank" rel="noopener">Get Pro — $5/mo</a>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <section class="container">
-    <div class="cta">
-      <h2>Ready to get started?</h2>
-      <p>Install any extension free from the VS Code Marketplace, or unlock Pro features.</p>
-      <div class="hero-actions">
-        <a href="#extensions" class="btn btn-primary">Browse Extensions</a>
-        <a href="/pro" class="btn btn-outline">See Pro Pricing</a>
+  <footer class="site-foot">
+    <div class="wrap">
+      <span class="meta">© 2026 TakeASeat DevTools · zero dependencies · MIT · rev 2026.06</span>
+      <div class="links">
+        <a href="#extensions">Extensions</a>
+        <a href="/pro">Pro</a>
+        <a href="#api">Cron API</a>
+        <a href="https://marketplace.visualstudio.com/publishers/takeaseat-venture" target="_blank" rel="noopener">Marketplace ↗</a>
       </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      <p>TakeASeat DevTools · Built with zero dependencies · MIT Licensed</p>
-      <p style="margin-top:8px;">&copy; 2026 TakeASeat. <a href="/pro">Pro features</a> · <a href="#api">Cron API</a></p>
     </div>
   </footer>
 </body>
